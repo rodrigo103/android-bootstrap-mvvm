@@ -1,4 +1,4 @@
-package ar.com.wolox.android.bootstrap.ui.posts
+package ar.com.wolox.android.bootstrap.ui.photos
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,31 +12,31 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ar.com.wolox.android.bootstrap.Constants.INTERNAL_SERVER_ERROR_STATUS_CODE
 import ar.com.wolox.android.bootstrap.Constants.NOT_FOUND_STATUS_CODE
 import ar.com.wolox.android.bootstrap.R
-import ar.com.wolox.android.bootstrap.databinding.FragmentPostsBinding
+import ar.com.wolox.android.bootstrap.databinding.FragmentPhotosBinding
 import ar.com.wolox.android.bootstrap.network.util.RequestStatus
-import ar.com.wolox.android.bootstrap.ui.adapter.PostsAdapter
+import ar.com.wolox.android.bootstrap.ui.adapter.PhotosAdapter
 import ar.com.wolox.android.bootstrap.ui.root.RootViewModel
 import ar.com.wolox.android.bootstrap.utils.SnackbarFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostsFragment : Fragment() {
+class PhotosFragment : Fragment() {
 
-    private var _binding: FragmentPostsBinding? = null
+    private var _binding: FragmentPhotosBinding? = null
 
     private val binding get() = _binding!!
 
-    val viewModel: PostsViewModel by viewModels()
+    val viewModel: PhotosViewModel by viewModels()
     private val rootViewModel: RootViewModel by activityViewModels()
 
-    private val args: PostsFragmentArgs by navArgs()
+    private val args: PhotosFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPostsBinding.inflate(inflater)
+        _binding = FragmentPhotosBinding.inflate(inflater)
         return binding.root
     }
 
@@ -48,7 +48,7 @@ class PostsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getPosts(args.userId)
+        getPhotos(args.albumId)
         setObservers()
     }
 
@@ -66,7 +66,7 @@ class PostsFragment : Fragment() {
                 RequestStatus.Loading -> showLoading()
                 is RequestStatus.Failure -> {
                     hideLoading()
-                    binding.postRecyclerView.visibility = View.GONE
+                    binding.photosRecyclerView.visibility = View.GONE
                     when (it.error) {
                         // Handle every possible error here
                         NOT_FOUND_STATUS_CODE -> showErrorSnackbar()
@@ -81,7 +81,7 @@ class PostsFragment : Fragment() {
 
     private fun showErrorSnackbar() {
         SnackbarFactory.create(
-            binding.postRecyclerView,
+            binding.photosRecyclerView,
             getString(R.string.posts_error),
             getString(R.string.ok)
         )
@@ -89,19 +89,19 @@ class PostsFragment : Fragment() {
 
     private fun showEmptyListSnackbar() {
         SnackbarFactory.create(
-            binding.postRecyclerView,
+            binding.photosRecyclerView,
             getString(R.string.no_posts_to_show),
             getString(R.string.ok)
         )
     }
 
-    private fun getPosts(userId: Int) {
+    private fun getPhotos(albumId: Int) {
         viewModel.apply {
-            getPosts(userId)
-            posts.observe(viewLifecycleOwner) {
+            getPhotos(albumId)
+            photos.observe(viewLifecycleOwner) {
                 if (it.isNotEmpty()) {
-                    binding.postRecyclerView.apply {
-                        adapter = PostsAdapter().apply {
+                    binding.photosRecyclerView.apply {
+                        adapter = PhotosAdapter().apply {
                             submitList(it)
                         }
                         layoutManager = LinearLayoutManager(requireContext())
@@ -110,7 +110,7 @@ class PostsFragment : Fragment() {
                         visibility = View.VISIBLE
                     }
                 } else {
-                    binding.postRecyclerView.visibility = View.GONE
+                    binding.photosRecyclerView.visibility = View.GONE
                     showEmptyListSnackbar()
                 }
             }

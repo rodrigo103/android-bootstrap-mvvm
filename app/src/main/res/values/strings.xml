@@ -11,4 +11,21 @@
     <string name="ok">OK</string>
     <string name="posts_error">Error retrieving posts</string>
     <string name="no_posts_to_show">Currently we have no posts to show</string>
+
+    <!-- Profile-->
+    <string name="profile_user_id">ID: %1$s</string>
+    <string name="profile_name">Nombre: %1$s</string>
+    <string name="profile_username">Nombre de usuario: %1$s</string>
+    <string name="profile_email">Email: %1$s</string>
+    <string name="profile_phone">Teléfono: %1$s</string>
+    <string name="profile_website">Sitio Web: %1$s</string>
+    <string name="profile_albums_button">Albums</string>
+    <string name="profile_todos_button">To-Dos</string>
+    <string name="profile_posts_button">Posts</string>
+    <string name="profile_logout_button">Logout</string>
+
+    <!-- Item album-->
+    <string name="album_item_user_id">User ID: %1$s</string>
+    <string name="album_item_id">ID: %1$s</string>
+    <string name="album_item_title">Title: %1$s</string>
 </resources>

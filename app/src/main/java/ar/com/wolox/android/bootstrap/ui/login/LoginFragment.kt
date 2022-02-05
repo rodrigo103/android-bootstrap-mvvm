@@ -80,7 +80,7 @@ class LoginFragment : Fragment() {
 
         viewModel.login.observe(viewLifecycleOwner) {
             when (it) {
-                LoginResponse.SUCCESS -> goToPosts()
+                LoginResponse.SUCCESS -> goToProfile()
                 LoginResponse.INVALID_CREDENTIALS -> showInvalidCredentialsError()
                 LoginResponse.INVALID_INPUT -> showInvalidInputError()
                 else -> showServerError()
@@ -117,7 +117,7 @@ class LoginFragment : Fragment() {
         startActivity(this)
     }
 
-    private fun goToPosts() {
-        findNavController().navigate(R.id.post_fragment)
+    private fun goToProfile() {
+        findNavController().navigate(R.id.profile_fragment)
     }
 }

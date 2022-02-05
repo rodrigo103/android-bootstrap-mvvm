@@ -12,4 +12,8 @@ class UserRepository @Inject constructor(
     suspend fun getUsers() = withContext(Dispatchers.IO) {
         service.getUsers()
     }
+
+    suspend fun getUser(userId: Int) = withContext(Dispatchers.IO) {
+        service.getUser(userId)
+    }
 }

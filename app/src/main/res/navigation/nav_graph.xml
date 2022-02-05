@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/post_fragment">
+    app:startDestination="@id/profile_fragment">
 
     <fragment
         android:id="@+id/login_fragment"
@@ -12,6 +12,59 @@
     <fragment
         android:id="@+id/post_fragment"
         android:name="ar.com.wolox.android.bootstrap.ui.posts.PostsFragment"
-        tools:layout="@layout/fragment_posts"/>
+        tools:layout="@layout/fragment_posts">
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile_fragment"
+        android:name="ar.com.wolox.android.bootstrap.ui.profile.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_post_fragment"
+            app:destination="@id/post_fragment" />
+        <action
+            android:id="@+id/action_profile_fragment_to_album_fragment"
+            app:destination="@id/album_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/album_fragment"
+        android:name="ar.com.wolox.android.bootstrap.ui.albums.AlbumsFragment"
+        android:label="AlbumsFragment"
+        tools:layout="@layout/fragment_albums">
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_album_fragment_to_photosFragment"
+            app:destination="@id/photos_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/photos_fragment"
+        android:name="ar.com.wolox.android.bootstrap.ui.photos.PhotosFragment"
+        android:label="PhotosFragment"
+        tools:layout="@layout/fragment_photos">
+        <argument
+            android:name="albumId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_photos_fragment_to_photoDetailFragment"
+            app:destination="@id/photoDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/photoDetailFragment"
+        android:name="ar.com.wolox.android.bootstrap.ui.photodetail.PhotoDetailFragment"
+        android:label="PhotoDetailFragment"
+        tools:layout="@layout/fragment_photo_detail">
+        <argument
+            android:name="photoId"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>

@@ -4,6 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'idea'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'jacoco'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply from: '../scripts/coverage/jacoco.gradle'
 apply from: '../scripts/quality/quality.gradle'
 
@@ -113,6 +114,7 @@ ext {
     mock_web_server_version = '4.9.3'
     security_crypto_version = '1.1.0-alpha03'
     wolmo_testing_version = '0.1.2'
+    glideVersion = '4.10.0'
 }
 
 dependencies {
@@ -170,4 +172,8 @@ dependencies {
 
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    //Glide
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
 }

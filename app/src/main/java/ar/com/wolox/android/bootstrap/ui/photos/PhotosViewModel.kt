@@ -1,22 +1,19 @@
-package ar.com.wolox.android.bootstrap.ui.posts
+package ar.com.wolox.android.bootstrap.ui.photos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.wolox.android.bootstrap.Constants
-import ar.com.wolox.android.bootstrap.model.Post
+import ar.com.wolox.android.bootstrap.model.Photo
 import ar.com.wolox.android.bootstrap.network.util.RequestStatus
-import ar.com.wolox.android.bootstrap.repository.PostRepository
-import ar.com.wolox.android.bootstrap.utils.SharedPreferencesManager
+import ar.com.wolox.android.bootstrap.repository.AlbumRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PostsViewModel @Inject constructor(
-    private val postsRepository: PostRepository,
-    private val sharedPreferencesManager: SharedPreferencesManager
+class PhotosViewModel @Inject constructor(
+    private val albumsRepository: AlbumRepository,
 ) : ViewModel() {
 
     private val _requestStatus = MutableLiveData<RequestStatus>()
@@ -37,23 +34,20 @@ class PostsViewModel @Inject constructor(
         _requestStatus.value = RequestStatus.Failure(error)
     }
 
-    private val _posts = MutableLiveData<List<Post>>()
-    val posts: LiveData<List<Post>>
-        get() = _posts
+    private val _photos = MutableLiveData<List<Photo>>()
+    val photos: LiveData<List<Photo>>
+        get() = _photos
 
-    fun getPosts(userId: Int) {
+    fun getPhotos(albumId: Int) {
         viewModelScope.launch {
             toggleRequestStatus()
-            val result = postsRepository.getPosts(userId)
+            val result = albumsRepository.getPhotos(albumId)
             if (result.isSuccessful) {
-                _posts.value = result.body()!!
+                _photos.value = result.body()!!
                 toggleRequestStatus()
             } else {
                 onRequestFailed(result.code())
             }
         }
     }
-
-    val isUserLogged: Boolean
-        get() = sharedPreferencesManager[Constants.USER_IS_LOGGED_KEY, false]
 }

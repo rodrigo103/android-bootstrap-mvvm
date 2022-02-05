@@ -1,5 +1,6 @@
 package ar.com.wolox.android.bootstrap.di
 
+import ar.com.wolox.android.bootstrap.network.service.AlbumService
 import ar.com.wolox.android.bootstrap.network.service.PostService
 import ar.com.wolox.android.bootstrap.network.service.UserService
 import dagger.Module
@@ -19,4 +20,8 @@ class ApiModule {
     @Provides
     fun provideUsersService(retrofit: Retrofit): UserService =
         retrofit.create(UserService::class.java)
+
+    @Provides
+    fun provideAlbumsService(retrofit: Retrofit): AlbumService =
+        retrofit.create(AlbumService::class.java)
 }

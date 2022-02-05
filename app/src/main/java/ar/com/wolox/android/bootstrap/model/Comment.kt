@@ -3,11 +3,10 @@ package ar.com.wolox.android.bootstrap.model
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class User(
-    @SerializedName("id") val userId: Int,
+data class Comment(
+    @SerializedName("postId") val postId: Int,
+    @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
-    @SerializedName("username") val username: String,
     @SerializedName("email") val email: String,
-    @SerializedName("phone") val phone: String,
-    @SerializedName("website") val website: String,
+    @SerializedName("body") val body: String
 ) : Serializable

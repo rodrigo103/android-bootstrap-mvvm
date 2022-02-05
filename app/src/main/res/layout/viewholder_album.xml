@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:ellipsize="none"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:text="@string/album_item_user_id"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/font_4sp"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:text="@string/album_item_id"
+            app:layout_constraintTop_toBottomOf="@id/user_id" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/font_4sp"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:text="@string/album_item_title"
+            app:layout_constraintTop_toBottomOf="@id/id" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_2dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:background="@color/wolox_dark_gray"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

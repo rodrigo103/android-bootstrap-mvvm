@@ -7,5 +7,11 @@ import javax.inject.Inject
 
 class PostRepository @Inject constructor(private val postsService: PostService) {
 
-    suspend fun getPosts() = withContext(Dispatchers.IO) { postsService.getPosts() }
+    suspend fun getPosts() = withContext(Dispatchers.IO) {
+        postsService.getPosts()
+    }
+
+    suspend fun getPosts(userId: Int) = withContext(Dispatchers.IO) {
+        postsService.getPosts(userId)
+    }
 }

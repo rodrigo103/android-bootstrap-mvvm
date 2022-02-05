@@ -52,7 +52,9 @@ class LoginViewModel @Inject constructor(
                     val userExists = response.body()!!.any { it.username == username }
                     if (userExists) {
                         _login.value = LoginResponse.SUCCESS
+                        val user = response.body()!!.find { it.username == username }
                         sharedPreferencesManager.store(Constants.USER_IS_LOGGED_KEY, true)
+                        sharedPreferencesManager.store(Constants.USER_ID_KEY, user!!.userId)
                     } else {
                         _login.value = LoginResponse.INVALID_CREDENTIALS
                     }
