@@ -159,6 +159,7 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mock_web_server_version"
     androidTestImplementation "com.github.Wolox:wolmo-testing-android:$wolmo_testing_version"
     androidTestImplementation "io.mockk:mockk-android:1.12.1"
+    androidTestImplementation "com.google.truth:truth:1.0.1"
 
     // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"

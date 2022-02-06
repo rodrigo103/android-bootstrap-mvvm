@@ -1,11 +1,14 @@
 package ar.com.wolox.android.bootstrap.login
 
-import androidx.test.core.app.ActivityScenario
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import ar.com.wolox.android.bootstrap.BuildConfig
 import ar.com.wolox.android.bootstrap.Constants.USERS_PATH
 import ar.com.wolox.android.bootstrap.R
 import ar.com.wolox.android.bootstrap.base.BaseInstrumentedTest
+import ar.com.wolox.android.bootstrap.launchFragmentInHiltContainer
 import ar.com.wolox.android.bootstrap.login.LoginInstrumentedTestConstants.EMPTY_USERS_BODY
 import ar.com.wolox.android.bootstrap.login.LoginInstrumentedTestConstants.INVALID_USER_NAME
 import ar.com.wolox.android.bootstrap.login.LoginInstrumentedTestConstants.USER_ID
@@ -13,11 +16,8 @@ import ar.com.wolox.android.bootstrap.login.LoginInstrumentedTestConstants.VALID
 import ar.com.wolox.android.bootstrap.login.LoginInstrumentedTestConstants.VALID_USER_NAME
 import ar.com.wolox.android.bootstrap.model.Post
 import ar.com.wolox.android.bootstrap.model.User
-import ar.com.wolox.android.bootstrap.ui.login.LoginActivity
 import ar.com.wolox.android.bootstrap.ui.login.LoginFragment
-import ar.com.wolox.android.bootstrap.ui.posts.PostsActivity
 import ar.com.wolox.wolmo.testing.espresso.actions.ActionsHelper.singleClick
-import ar.com.wolox.wolmo.testing.espresso.intents.IntentMatchers.checkIntent
 import ar.com.wolox.wolmo.testing.espresso.intents.IntentMatchers.checkIntentWithActionView
 import ar.com.wolox.wolmo.testing.espresso.text.TextHelpers.writeText
 import ar.com.wolox.wolmo.testing.espresso.text.TextMatchers.checkErrorText
@@ -27,6 +27,7 @@ import ar.com.wolox.wolmo.testing.espresso.text.TextMatchers.checkTextMatches
 import ar.com.wolox.wolmo.testing.espresso.visibility.VisibilityMatchers.checkIsVisible
 import ar.com.wolox.wolmo.testing.hilt.launchHiltFragment
 import ar.com.wolox.wolmo.testing.model.Assertion
+import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import dagger.hilt.android.testing.HiltAndroidTest
 import okhttp3.mockwebserver.Dispatcher
@@ -116,9 +117,9 @@ class LoginInstrumentedTest : BaseInstrumentedTest() {
     @Test
     fun emptyPassword_shouldShowErrorMessage() {
         val view = launchHiltFragment<LoginFragment>()
+        writeText(R.id.usernameInput, VALID_USER_NAME)
+        singleClick(R.id.loginButton)
         view?.run {
-            writeText(R.id.usernameInput, VALID_USER_NAME)
-            singleClick(R.id.loginButton)
             checkErrorText(
                 Assertion(
                     R.id.passwordInput,
@@ -147,36 +148,46 @@ class LoginInstrumentedTest : BaseInstrumentedTest() {
     @Test
     fun invalidCredentials_shouldShowSnackbarError() {
         service.dispatcher = getDispatcher()
-        val view = ActivityScenario.launch(LoginActivity::class.java)
+        val view = launchHiltFragment<LoginFragment>()
+        writeText(R.id.usernameInput, INVALID_USER_NAME)
+        writeText(R.id.passwordInput, VALID_PASSWORD)
+        singleClick(R.id.loginButton)
+
         view.run {
-            writeText(R.id.usernameInput, INVALID_USER_NAME)
-            writeText(R.id.passwordInput, VALID_PASSWORD)
-            singleClick(R.id.loginButton)
             checkPopUpText(R.string.invalid_credentials)
         }
     }
 
     @Test
     fun validCredentials_goToPosts() {
+        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+
         service.dispatcher = getDispatcher(true)
-        val view = ActivityScenario.launch(LoginActivity::class.java)
-        view.run {
-            checkIntent(PostsActivity::class.java.name) {
-                writeText(R.id.usernameInput, VALID_USER_NAME)
-                writeText(R.id.passwordInput, VALID_PASSWORD)
-                singleClick(R.id.loginButton)
+        launchFragmentInHiltContainer<LoginFragment> {
+            this.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
+                if (viewLifecycleOwner != null) {
+                    // The fragment’s view has just been created
+                    navController.setGraph(R.navigation.nav_graph)
+                    Navigation.setViewNavController(this.requireView(), navController)
+                }
             }
         }
+
+        writeText(R.id.usernameInput, VALID_USER_NAME)
+        writeText(R.id.passwordInput, VALID_PASSWORD)
+        singleClick(R.id.loginButton)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.post_fragment)
     }
 
     @Test
     fun serverError_shouldShowSnackbarError() {
         service.dispatcher = getErrorDispatcher()
-        val view = ActivityScenario.launch(LoginActivity::class.java)
+        val view = launchHiltFragment<LoginFragment>()
+        writeText(R.id.usernameInput, VALID_USER_NAME)
+        writeText(R.id.passwordInput, VALID_PASSWORD)
+        singleClick(R.id.loginButton)
+
         view.run {
-            writeText(R.id.usernameInput, VALID_USER_NAME)
-            writeText(R.id.passwordInput, VALID_PASSWORD)
-            singleClick(R.id.loginButton)
             checkPopUpText(R.string.server_error)
         }
     }
