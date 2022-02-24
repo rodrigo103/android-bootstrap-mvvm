@@ -3,11 +3,15 @@ package ar.com.wolox.android.bootstrap.ui.base
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import ar.com.wolox.android.bootstrap.network.util.RequestStatus
+import ar.com.wolox.android.bootstrap.ui.root.RootViewModel
 
-abstract class BaseFragment<V : BaseView, M : BaseViewModel<V>> : Fragment(), BaseView {
+abstract class BaseFragment<M : BaseViewModel> : Fragment() {
 
     abstract val viewModel: M
+
+    private val rootViewModel: RootViewModel by activityViewModels()
 
     open fun setListeners() { }
 
@@ -25,11 +29,11 @@ abstract class BaseFragment<V : BaseView, M : BaseViewModel<V>> : Fragment(), Ba
         setObservers()
     }
 
-    override fun showLoading() {
-        (requireActivity() as BaseActivity).showLoading()
+    private fun showLoading() {
+        rootViewModel.showLoading()
     }
 
-    override fun hideLoading() {
-        (requireActivity() as BaseActivity).hideLoading()
+    private fun hideLoading() {
+        rootViewModel.hideLoading()
     }
 }
