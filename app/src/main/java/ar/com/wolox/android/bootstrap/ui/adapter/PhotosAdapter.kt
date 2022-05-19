@@ -28,17 +28,13 @@ class PhotosAdapter : ListAdapter<Photo, PhotoViewHolder>(diffCallback) {
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+        holder.binding.divider.visibility = if (isLastPosition(position)) {
+            View.INVISIBLE
+        } else {
+            View.VISIBLE
+        }
+
         holder.bind(getItem(position))
-//        with(holder) {
-//            with(binding.divider) {
-//                visibility = if (isLastPosition(position)) {
-//                    View.INVISIBLE
-//                } else {
-//                    View.VISIBLE
-//                }
-//                bind(getItem(position))
-//            }
-//        }
     }
 
     private fun isLastPosition(position: Int) = (itemCount - 1 == position)
@@ -55,7 +51,7 @@ class PhotosAdapter : ListAdapter<Photo, PhotoViewHolder>(diffCallback) {
 }
 
 class PhotoViewHolder(
-    private val binding: ViewholderPhotoBinding
+    val binding: ViewholderPhotoBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private fun navigateToPhoto(photoId: Int, view: View) {
