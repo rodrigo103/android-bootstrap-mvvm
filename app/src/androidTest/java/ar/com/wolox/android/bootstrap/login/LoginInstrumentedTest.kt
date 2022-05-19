@@ -51,7 +51,9 @@ class LoginInstrumentedTest : BaseInstrumentedTest() {
                                     USER_ID,
                                     VALID_USER_NAME,
                                     VALID_USER_NAME,
-                                    VALID_PASSWORD
+                                    VALID_PASSWORD,
+                                    "",
+                                    ""
                                 )
                             )
                         )
@@ -176,7 +178,7 @@ class LoginInstrumentedTest : BaseInstrumentedTest() {
         writeText(R.id.usernameInput, VALID_USER_NAME)
         writeText(R.id.passwordInput, VALID_PASSWORD)
         singleClick(R.id.loginButton)
-        assertThat(navController.currentDestination?.id).isEqualTo(R.id.post_fragment)
+        assertThat(navController.currentDestination?.id).isEqualTo(R.id.profile_fragment)
     }
 
     @Test

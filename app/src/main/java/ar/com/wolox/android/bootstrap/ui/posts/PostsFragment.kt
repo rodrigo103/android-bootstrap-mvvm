@@ -23,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class PostsFragment : Fragment() {
 
     private var _binding: FragmentPostsBinding? = null
-
     private val binding get() = _binding!!
 
     val viewModel: PostsViewModel by viewModels()
@@ -46,9 +45,9 @@ class PostsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
-        getPosts(args.userId)
+        viewModel.getPosts(args.userId)
         setObservers()
     }
 
@@ -61,20 +60,39 @@ class PostsFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.requestStatus.observe(viewLifecycleOwner) {
-            when (it) {
-                RequestStatus.Loading -> showLoading()
-                is RequestStatus.Failure -> {
-                    hideLoading()
-                    binding.postRecyclerView.visibility = View.GONE
-                    when (it.error) {
-                        // Handle every possible error here
-                        NOT_FOUND_STATUS_CODE -> showErrorSnackbar()
-                        INTERNAL_SERVER_ERROR_STATUS_CODE -> showErrorSnackbar()
-                        else -> showErrorSnackbar()
+        viewModel.apply {
+            requestStatus.observe(viewLifecycleOwner) {
+                when (it) {
+                    RequestStatus.Loading -> showLoading()
+                    is RequestStatus.Failure -> {
+                        hideLoading()
+                        binding.postRecyclerView.visibility = View.GONE
+                        when (it.error) {
+                            // Handle every possible error here
+                            NOT_FOUND_STATUS_CODE -> showErrorSnackbar()
+                            INTERNAL_SERVER_ERROR_STATUS_CODE -> showErrorSnackbar()
+                            else -> showErrorSnackbar()
+                        }
                     }
+                    else -> hideLoading()
                 }
-                else -> hideLoading()
+            }
+
+            posts.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
+                    binding.postRecyclerView.apply {
+                        adapter = PostsAdapter().apply {
+                            submitList(it)
+                        }
+                        layoutManager = LinearLayoutManager(requireContext())
+                        isNestedScrollingEnabled = false
+                        isFocusable = false
+                        visibility = View.VISIBLE
+                    }
+                } else {
+                    binding.postRecyclerView.visibility = View.GONE
+                    showEmptyListSnackbar()
+                }
             }
         }
     }
@@ -93,27 +111,5 @@ class PostsFragment : Fragment() {
             getString(R.string.no_posts_to_show),
             getString(R.string.ok)
         )
-    }
-
-    private fun getPosts(userId: Int) {
-        viewModel.apply {
-            getPosts(userId)
-            posts.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
-                    binding.postRecyclerView.apply {
-                        adapter = PostsAdapter().apply {
-                            submitList(it)
-                        }
-                        layoutManager = LinearLayoutManager(requireContext())
-                        isNestedScrollingEnabled = false
-                        isFocusable = false
-                        visibility = View.VISIBLE
-                    }
-                } else {
-                    binding.postRecyclerView.visibility = View.GONE
-                    showEmptyListSnackbar()
-                }
-            }
-        }
     }
 }

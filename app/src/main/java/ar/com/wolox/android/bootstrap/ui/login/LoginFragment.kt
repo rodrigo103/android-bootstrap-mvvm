@@ -42,7 +42,7 @@ class LoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onViewCreated(view, savedInstanceState)
 
         setListeners()
         setObservers()
@@ -57,7 +57,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setListeners() {
-        with(binding) {
+        binding.apply {
             loginButton.setOnClickListener {
                 viewModel.login(
                     usernameInput.text.toString(),
@@ -71,19 +71,21 @@ class LoginFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModel.requestStatus.observe(viewLifecycleOwner) {
-            when (it) {
-                RequestStatus.Loading -> showLoading()
-                else -> hideLoading()
+        viewModel.apply {
+            requestStatus.observe(viewLifecycleOwner) {
+                when (it) {
+                    RequestStatus.Loading -> showLoading()
+                    else -> hideLoading()
+                }
             }
-        }
 
-        viewModel.login.observe(viewLifecycleOwner) {
-            when (it) {
-                LoginResponse.SUCCESS -> goToProfile()
-                LoginResponse.INVALID_CREDENTIALS -> showInvalidCredentialsError()
-                LoginResponse.INVALID_INPUT -> showInvalidInputError()
-                else -> showServerError()
+            login.observe(viewLifecycleOwner) {
+                when (it) {
+                    LoginResponse.SUCCESS -> goToProfile()
+                    LoginResponse.INVALID_CREDENTIALS -> showInvalidCredentialsError()
+                    LoginResponse.INVALID_INPUT -> showInvalidInputError()
+                    else -> showServerError()
+                }
             }
         }
     }
