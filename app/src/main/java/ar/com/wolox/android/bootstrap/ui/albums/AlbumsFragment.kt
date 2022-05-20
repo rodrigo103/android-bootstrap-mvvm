@@ -23,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class AlbumsFragment : Fragment() {
 
     private var _binding: FragmentAlbumsBinding? = null
-
     private val binding get() = _binding!!
 
     val viewModel: AlbumsViewModel by viewModels()
@@ -102,7 +101,7 @@ class AlbumsFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     binding.albumsRecyclerView.apply {
                         adapter = AlbumsAdapter().apply {
-                            submitList(it)
+                            addAlbums(it)
                         }
                         layoutManager = LinearLayoutManager(requireContext())
                         isNestedScrollingEnabled = false
