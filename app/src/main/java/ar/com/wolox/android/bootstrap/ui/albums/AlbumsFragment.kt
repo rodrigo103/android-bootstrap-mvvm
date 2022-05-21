@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import ar.com.wolox.android.bootstrap.Constants.INTERNAL_SERVER_ERROR_STATUS_CODE
@@ -20,7 +21,7 @@ import ar.com.wolox.android.bootstrap.utils.SnackbarFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AlbumsFragment : Fragment() {
+class AlbumsFragment : Fragment(), AlbumsAdapter.AlbumsInteractionListener {
 
     private var _binding: FragmentAlbumsBinding? = null
     private val binding get() = _binding!!
@@ -102,6 +103,7 @@ class AlbumsFragment : Fragment() {
                     binding.albumsRecyclerView.apply {
                         adapter = AlbumsAdapter().apply {
                             addAlbums(it)
+                            setInteractionListener(this@AlbumsFragment)
                         }
                         layoutManager = LinearLayoutManager(requireContext())
                         isNestedScrollingEnabled = false
@@ -114,5 +116,15 @@ class AlbumsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onAlbumItemClick(id: Int, view: View) {
+        navigateToAlbum(id, view)
+    }
+
+    private fun navigateToAlbum(albumId: Int, view: View) {
+        view.findNavController().navigate(
+            AlbumsFragmentDirections.actionAlbumFragmentToPhotosFragment(albumId)
+        )
     }
 }

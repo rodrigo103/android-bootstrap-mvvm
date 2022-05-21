@@ -4,19 +4,17 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 import ar.com.wolox.android.bootstrap.R
 import ar.com.wolox.android.bootstrap.databinding.ViewholderAlbumBinding
 import ar.com.wolox.android.bootstrap.model.Album
-import ar.com.wolox.android.bootstrap.ui.albums.AlbumsFragmentDirections
 
 class AlbumsAdapter : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
 
     interface AlbumsInteractionListener {
-        fun onAlbumItemClick()
+        fun onAlbumItemClick(id: Int, view: View)
     }
 
     var listener: AlbumsInteractionListener? = null
@@ -64,16 +62,14 @@ class AlbumsAdapter : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
         this.albums.addAll(albums)
     }
 
-    class AlbumViewHolder(
+    fun setInteractionListener(listener: AlbumsInteractionListener) {
+        this.listener = listener
+    }
+
+    inner class AlbumViewHolder(
         val binding: ViewholderAlbumBinding,
         private val context: Context
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        private fun navigateToAlbum(albumId: Int, view: View) {
-            view.findNavController().navigate(
-                AlbumsFragmentDirections.actionAlbumFragmentToPhotosFragment(albumId)
-            )
-        }
 
         fun bind(item: Album) {
             with(binding) {
@@ -81,7 +77,7 @@ class AlbumsAdapter : RecyclerView.Adapter<AlbumsAdapter.AlbumViewHolder>() {
                 id.text = context.getString(R.string.album_item_id, item.id.toString())
                 title.text = context.getString(R.string.album_item_title, item.title)
                 root.setOnClickListener {
-                    navigateToAlbum(item.id, it)
+                    listener?.onAlbumItemClick(item.id, it)
                 }
             }
         }
